@@ -195,3 +195,27 @@ class Page(models.Model):
 
     def __str__(self):
         return self.title
+    
+def gambar_events(instance, filename):
+    ext = filename.split('.')[-1]
+    title_slug = slugify(instance.title)
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+    new_filename = f"{title_slug}_{timestamp}.{ext}"
+    return os.path.join('events/gambar_events/', new_filename)
+
+
+class Events(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    tanggal_pelaksanaan = models.DateField()
+    waktu_pelaksanaan = models.TimeField()
+    lokasi_pelaksanaan = models.CharField(max_length=200)
+    gambar_events = models.ImageField(upload_to=gambar_events, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = "Events"
+
+    def __str__(self):
+        return self.title
